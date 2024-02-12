@@ -40,8 +40,9 @@ public class Reservation {
 	// calculando a diferença de duas datas.
 	// esse calculo e feito por milisegindos
 	public long duration() {
+
 		// getTime()me devolve a quantidade de milisegundo da data.
-		long diff =  checkout.getTime() - checkin.getTime();
+		long diff = checkout.getTime() - checkin.getTime();
 		// diff e a quantidade de milisegundos
 		// a TimeUnit e um tipo enumerado complexo que contem algumas operações
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
@@ -49,22 +50,30 @@ public class Reservation {
 		// do diff,e dias
 	}
 
-	public void updateDates(Date checkin, Date checkout) {
+	public String updateDates(Date checkin, Date checkout) {
+
+		Date now = new Date();// new Date() pega a hora de agora!
+		// este if()checa se a data do checkin for antes de agora, e a data checkout for
+		// antes de agora
+		// vai dar erro porque a reserva não pode ser feita.
+		if (checkin.before(now) || checkout.before(now)) {
+			return "Reservation dates for update must be future dates";
+		}
+		 if (!checkout.after(checkin)) {
+			return "Check-out date must be after check-in date";
+		}
+
 		this.checkin = checkin;
 		this.checkout = checkout;
+
+		return null;
 	}
 
 	@Override
 	public String toString() {
 
-		return "Room "
-		+ roomNumber 
-		+ ", check-in: " 
-		+ sdf.format(checkin) 
-		+ ", check-out: " 
-		+ sdf.format(checkout)
-		+ ", " 
-		+ duration() + " nigths";
+		return "Room " + roomNumber + ", check-in: " + sdf.format(checkin) + ", check-out: " + sdf.format(checkout)
+				+ ", " + duration() + " nigths";
 	}
 
 }
