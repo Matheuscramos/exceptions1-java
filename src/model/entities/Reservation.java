@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exceptions.DomainExcepetion;
+
 public class Reservation {
 
 	private Integer roomNumber;
@@ -15,7 +17,14 @@ public class Reservation {
 
 	}
 
-	public Reservation(Integer roomNumber, Date checkin, Date checkout) {
+	public Reservation(Integer roomNumber, Date checkin, Date checkout) throws DomainExcepetion {
+		//esta logica ferifica se a data do checkout não e depois da data docheckin.
+		//por isso foi colocado essa logica neste ponto, porque e o começo do metodo.
+		// este e uma artemanha que se chama programação defenciva, e uma boa pratica!
+		if (!checkout.after(checkin)) {
+			throw new DomainExcepetion("Check-out date must be after check-in date");
+		}
+
 		this.roomNumber = roomNumber;
 		this.checkin = checkin;
 		this.checkout = checkout;
@@ -50,23 +59,19 @@ public class Reservation {
 		// do diff,e dias
 	}
 
-	public String updateDates(Date checkin, Date checkout) {
+	public void updateDates(Date checkin, Date checkout) throws DomainExcepetion {
 
 		Date now = new Date();// new Date() pega a hora de agora!
 		// este if()checa se a data do checkin for antes de agora, e a data checkout for
 		// antes de agora
 		// vai dar erro porque a reserva não pode ser feita.
 		if (checkin.before(now) || checkout.before(now)) {
-			return "Reservation dates for update must be future dates";
-		}
-		 if (!checkout.after(checkin)) {
-			return "Check-out date must be after check-in date";
+			throw new DomainExcepetion("Reservation dates for update must be future dates");
 		}
 
 		this.checkin = checkin;
 		this.checkout = checkout;
 
-		return null;
 	}
 
 	@Override
